@@ -1,12 +1,57 @@
 <?php
 
+/**
+ * IDS_Ips
+ *
+ * Will log and allow you to block ip addresses 
+ *
+ * @category  Security
+ * @author    Bernie Berg <bernie@dakotanetwork.com>
+ * @license   http://www.gnu.org/licenses/lgpl.html LGPL
+ * @version   Release: $Id:Ips.php 517 2011-07-29 15:04:13Z bernieberg $
+ */
 class IDS_Ips
 {
-	private $data = null;
+	/**
+     * Holds the data from the log file
+     *
+     * @var array
+     */
+	private $data = array();
+	
+	/**
+     * how long an ip will be blocked from their last hit
+     *
+     * @var int
+     */
 	private $blocked_duration = 7200;
+	
+	/**
+     * How many negative hits until they are blocked
+     *
+     * @var int
+     */
 	private $blocked_count = 5;
+	
+	/**
+     * location of the ip log file
+     *
+     * @var string
+     */
 	private $ip_file = null;
 
+	
+	/**
+     * Constructor
+     *
+     * Sets up the object with the passed arguments
+     *
+     * @param string $ip_file location of the ip log file
+     * @param int $duration how long, in seconds, to keep an ip blocked
+     * @param int $count how many hits until be block this ip
+	 *
+     * @return void
+     */
     public function __construct($ip_file, $duration = 7200, $count = 5) 
     {
 		$this->blocked_duration = $duration;
@@ -32,6 +77,15 @@ class IDS_Ips
 		$this->data = $good_data;
     }
 	
+	/**
+     * isBlocked
+     *
+     * Is the passed ip address blocked?
+     *
+     * @param string $ip_address ip we are checking
+	 *
+     * @return boolean
+     */
 	public function isBlocked($ip_address) 
     {
 		if (!array_key_exists($ip_address, $this->data)) {
@@ -48,15 +102,31 @@ class IDS_Ips
 		return false;
     }
 	
+	/**
+     * unBlock
+     *
+     * remove the passed ip address, you should run  writeLog after this
+     *
+     * @param string $ip_address ip we are checking
+	 *
+     * @return void
+     */
 	public function unBlock($ip_address) 
     {
 		if (array_key_exists($ip_address, $this->data)) {
 			unset($this->data[$ip_address]);
 		}
-		
-		return true;
     }
 	
+	/**
+     * logHit
+     *
+     * log and increment a negative hit for this ip address
+     *
+     * @param string $ip_address ip we are checking
+	 *
+     * @return void
+     */
 	public function logHit($ip_address) 
     {
 		if (!array_key_exists($ip_address, $this->data)) {
@@ -65,10 +135,15 @@ class IDS_Ips
 			$this->data[$ip_address][1]++; 
 			$this->data[$ip_address][2] = time(); 
 		}
-		
-		return true;
     }
 	
+	/**
+     * writeLog
+     *
+     * write the ip log file
+	 *
+     * @return void
+     */
 	public function writeLog() 
     {
 		$fp = fopen($this->ip_file, 'w');
