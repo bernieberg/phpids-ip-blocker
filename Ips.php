@@ -1,6 +1,6 @@
 <?php
 
-class IDS_IPS 
+class IDS_Ips
 {
 	private $data = null;
 	private $blocked_duration = 7200;
