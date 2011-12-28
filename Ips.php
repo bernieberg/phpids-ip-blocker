@@ -55,7 +55,7 @@ class IDS_Ips
     public function __construct($ip_file, $duration = 7200, $count = 5) 
     {
 		$this->blocked_duration = $duration;
-		$this->count = $count;
+		$this->blocked_count = $count;
 		$this->ip_file = $ip_file;
 		
 		if (!file_exists($ip_file)) {
