@@ -52,10 +52,10 @@ class IDS_Ips
 	 *
      * @return void
      */
-    public function __construct($ip_file, $duration = 7200, $count = 5) 
+    public function __construct($ip_file, $duration = FALSE, $count = FALSE) 
     {
-		$this->blocked_duration = $duration;
-		$this->blocked_count = $count;
+		if($duration !== FALSE) $this->blocked_duration = $duration;
+		if($count !== FALSE) $this->blocked_count = $count;
 		$this->ip_file = $ip_file;
 		
 		if (!file_exists($ip_file)) {
